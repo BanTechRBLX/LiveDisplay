@@ -1,0 +1,19 @@
+{
+	"short_name": "LiveDisplay",
+	"name": "LiveDisplay",
+	"icons": [{
+		"src": "icon.png",
+		"type": "image/png",
+		"sizes": "192x192"
+	},{
+		"src": "icon512.png",
+		"type": "image/png",
+		"sizes": "512x512"
+	}],
+	"start_url": ".",
+	"scope": ".",
+	"background_color": "#222",
+	"theme_color": "#222",
+	"display": "fullscreen",
+	"orientation": "landscape"
+}

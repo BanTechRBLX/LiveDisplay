@@ -1,0 +1,244 @@
+/*! HTML5 Boilerplate v8.0.0 | MIT License | https://html5boilerplate.com/ */
+
+html {
+	background-color: #222;
+	color: #fff;
+	font-size: 2.222vh;
+	line-height: 1.4;
+}
+
+html.invert {
+	background-color: #eee;
+	color: #333;
+}
+
+body {
+	overflow: hidden;
+	height: 100%;
+}
+
+.vertical-container {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+}
+
+.main-container {
+	padding: 0 1rem;
+}
+
+.row-container {
+	display: flex;
+	flex-wrap: nowrap;
+}
+
+.row-container > * {
+	flex-grow: 1;
+}
+
+.no-grow {
+	flex-grow: 0;
+	flex-shrink: 0;
+	flex-basis: auto;
+}
+
+.metric-row {
+	height: 10rem;
+	margin-top: 1rem;
+}
+
+.metric-icon {
+	display: flex;
+	width: 13rem;
+	box-sizing: border-box;
+	padding: 1.5rem;
+	border: 0.05rem solid rgb(90 90 90 / 20%);
+}
+
+.invert .metric-icon {
+	background-color: #fff;
+}
+
+.metric-icon .icon {
+	width: 100%;
+	height: 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-image: url(../img/placeholder.svg);
+	background-size: contain;
+	transition: background-image 1s ease-in-out;
+}
+
+.metric-value {
+	padding: 1.5rem;
+}
+
+.pixel-container {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	align-content: flex-start;
+}
+
+.pixel {
+	width: 1rem;
+	height: 1rem;
+	box-sizing: border-box;
+	border: 0.05rem solid rgb(90 90 90 / 20%);
+	background-color: transparent;
+}
+
+.pixel.on {
+	background-color: #fff;
+}
+
+.invert .pixel.on {
+	background-color: #333;
+}
+
+.settings {
+	height: 0;
+	background: #fff;
+	overflow: hidden;
+	color: #333;
+	transition: height 0.2s ease-in-out;
+}
+
+.settings.open {
+	height: 6rem;
+}
+
+.settings .container {
+	padding: 2rem;
+}
+
+a.settings-toggle, a.screen-toggle, a.install-button {
+	position: absolute;
+	top: 0.25rem;
+	right: 0.25rem;
+	height: 2rem;
+	width: 2rem;
+	background: url(../img/gear.svg) no-repeat;
+	background-size: 1.5rem;
+	background-position: center;
+	transition: filter 0.2s ease-in-out;
+}
+
+a.screen-toggle {
+	top: auto;
+	bottom: 0.25rem;
+	background-image: url(../img/next.svg);
+}
+
+a.install-button {
+	right: 2.5rem;
+	background-image: url(../img/install.svg);
+}
+
+.invert a.settings-toggle, .invert a.screen-toggle, .invert a.install-button {
+	filter: brightness( 0 );
+}
+
+a.settings-toggle.open, a.settings-toggle.open ~ a.install-button {
+	filter: brightness( 0 );
+}
+
+.screen-saver {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 2;
+	opacity: 0.9;
+}
+
+.saver-warning {
+	position: absolute;
+	bottom: 0.5em;
+	font-weight: 700;
+    width: 100%;
+	text-align: center;
+	z-index: 3;
+}
+
+/*
+ * Remove text-shadow in selection highlight:
+ * https://twitter.com/miketaylr/status/12228805301
+ *
+ * Vendor-prefixed and regular ::selection selectors cannot be combined:
+ * https://stackoverflow.com/a/16982510/7133471
+ *
+ * Customize the background color to match your design.
+ */
+
+::-moz-selection {
+  background: #b3d4fc;
+  text-shadow: none;
+}
+
+::selection {
+  background: #b3d4fc;
+  text-shadow: none;
+}
+
+/*
+ * A better looking default horizontal rule
+ */
+
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 1em 0;
+  padding: 0;
+}
+
+/*
+ * Remove the gap between audio, canvas, iframes,
+ * images, videos and the bottom of their containers:
+ * https://github.com/h5bp/html5-boilerplate/issues/440
+ */
+
+audio,
+canvas,
+iframe,
+img,
+svg,
+video {
+  vertical-align: middle;
+}
+
+/*
+ * Remove default fieldset styles.
+ */
+
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * Allow only vertical resizing of textareas.
+ */
+
+textarea {
+  resize: vertical;
+}
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+/* ==========================================================================
+   Helper classes
+   ========================================================================== */
+
+/*
+ * Hide visually and from screen readers
+ */
+
+.hidden,
+[hidden] {
+  display: none !important;
+}
