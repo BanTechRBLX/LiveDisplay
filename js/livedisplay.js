@@ -612,5 +612,9 @@ $(window).resize(function () {
 	id = setTimeout(setUpScreen, 1000);
 });
 setUpScreen();
+
+// Initialise some things
 if (localStorage.getItem('theme') == 'invert')
 	$('html').addClass('invert');
+
+$('#timeout_range,#timeout').val(timeout);
