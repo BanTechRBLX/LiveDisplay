@@ -2,7 +2,7 @@
 	LiveDisplay works by setting all four rows of the screen at once, so you can
 	essentially create pages of metrics to show at once.
 
-	The examples below include a world clock page, and a currency conversion page,
+	The examples below include a world clock page, a currency conversion page,
 	and some static text. A commented-out example of weather is also included,
 	though an API key is required to run it (see getCurrentWeather in livedisplay.js).
 
