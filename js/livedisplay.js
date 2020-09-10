@@ -369,8 +369,8 @@ const transitionFill = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
 const transitionClear = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0];
 const transitionStepDelay = 30;
 
-var columns = 72;
-var timeout = 20; // secs, default
+var columns = 72; // changes on window resize
+var timeout = 10; // secs, default
 
 var content = [];
 var contentIndex = -1;

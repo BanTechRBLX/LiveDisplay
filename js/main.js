@@ -96,29 +96,37 @@ addPage([
 		'icon': './img/bts.svg',
 	},
 	{
-		'metric': function (callback) { callback('Follow Me'); },
+		'metric': function (callback) { callback(''); },
+		'icon': './img/placeholder.svg',
+	},
+	{
+		'metric': function (callback) { callback('Code available'); },
 		'icon': './img/social.svg',
+	},
+	{
+		'metric': function (callback) { callback('on Github'); },
+		'icon': './img/placeholder.svg',
 	},
 ]);
 
 // Weather example
-addPage([
-	{ // London temperature
-		'icon': 'WEATHER',
-		'metric': getCurrentWeather,
-		'arguments': ['YOUR_API_KEY', 'London', 'GB', 'temperature'],
-	},
-	{ // London wind speed and direction
-		'icon': './img/wind.svg',
-		'metric': getCurrentWeather,
-		'arguments': ['YOUR_API_KEY', 'London', 'GB', 'wind'],
-	},
-	{ // London sunrise / sunset
-		'icon': './img/sunset.svg',
-		'metric': getCurrentWeather,
-		'arguments': ['YOUR_API_KEY', 'London', 'GB', ['sunrise', 'sunset']],
-	},
-]);
+// addPage([
+// 	{ // London temperature
+// 		'icon': 'WEATHER',
+// 		'metric': getCurrentWeather,
+// 		'arguments': ['YOUR_API_KEY', 'London', 'GB', 'temperature'],
+// 	},
+// 	{ // London wind speed and direction
+// 		'icon': './img/wind.svg',
+// 		'metric': getCurrentWeather,
+// 		'arguments': ['YOUR_API_KEY', 'London', 'GB', 'wind'],
+// 	},
+// 	{ // London sunrise / sunset
+// 		'icon': './img/sunset.svg',
+// 		'metric': getCurrentWeather,
+// 		'arguments': ['YOUR_API_KEY', 'London', 'GB', ['sunrise', 'sunset']],
+// 	},
+// ]);
 
 // MAIN FUNCTIONALITY BELOW
 
