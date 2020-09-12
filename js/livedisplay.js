@@ -139,21 +139,40 @@ function getTimeAndDate(callback, area, location, omitTimezone, omitDayIndicator
 	if (typeof (area) != 'string' || typeof (location) != 'string')
 		return callback('invalid');
 	
-	$.ajax('https://cors-anywhere.herokuapp.com/https://worldtimeapi.org/api/timezone/' + area + '/' + location, {
-		dataType: 'json',
-		success: function (data) {
-			let localDate = new Date();
-			let remoteDate = new Date(data.unixtime * 1000 + data.raw_offset * 1000);
-			let timeString = ('00' + remoteDate.getHours().toString()).substr(-2) + ':' + ('00' + remoteDate.getMinutes().toString()).substr(-2);
-			if (!omitDayIndicator) {
-				if (remoteDate.getDate() - localDate.getDate() == 1)
-					timeString += ' tmw';
-				else if (remoteDate.getDate() - localDate.getDate() == -1)
-					timeString += ' yda';
-			}
-			callback(timeString + (omitTimezone ? '' : (' ' + data.abbreviation)));
-		},
-	});
+	function getTimeFromCache() {
+		let data = timezoneCache[area][location]
+		let localDate = new Date();
+		let remoteDate = new Date(localDate.getTime() + data.raw_offset * 1000);
+		let timeString = ('00' + remoteDate.getHours().toString()).substr(-2) + ':' + ('00' + remoteDate.getMinutes().toString()).substr(-2);
+		if (!omitDayIndicator) {
+			if (remoteDate.getDate() - localDate.getDate() == 1)
+				timeString += ' tmw';
+			else if (remoteDate.getDate() - localDate.getDate() == -1)
+				timeString += ' yda';
+		}
+		callback(timeString + (omitTimezone ? '' : (' ' + data.abbreviation)));
+	}
+	
+	if (!timezoneCache || !timezoneCache[area] || !timezoneCache[area][location])
+		$.ajax('https://cors-anywhere.herokuapp.com/https://worldtimeapi.org/api/timezone/' + area + '/' + location, {
+			dataType: 'json',
+			success: function (data) {
+				if (!timezoneCache)
+					timezoneCache = {};
+				if (!timezoneCache[area])
+					timezoneCache[area] = {};
+				if (!timezoneCache[area][location])
+					timezoneCache[area][location] = {};
+				
+				timezoneCache[area][location] = {
+					'abbreviation': data.abbreviation,
+					'raw_offset': data.raw_offset,
+				};
+				getTimeFromCache();
+			},
+		});
+	else
+		getTimeFromCache();
 }
 
 function getCurrencyConversion(callback, currencyA, currencyB, multiplier, decimalPlaces) {
@@ -247,7 +266,7 @@ function getCurrentWeather(callback, apiKey, location, country, type) {
 	if (typeof (type) != 'string' && typeof (type) != 'object')
 		callback('invalid');
 
-	if (Date.now() - lastWeatherTime > 1800000) {
+	if (Date.now() - lastWeatherFetch > 1800000) {
 		$.ajax('https://cors-anywhere.herokuapp.com/https://api.weatherbit.io/v2.0/current?city=' + location + '&country=' + country + '&key=' + apiKey, {
 			dataType: 'json',
 			success: function (data) {
@@ -266,7 +285,7 @@ function getCurrentWeather(callback, apiKey, location, country, type) {
 					'pres': data.data[0].pres,
 					'icon': data.data[0].weather.icon,
 				};
-				lastWeatherTime = Date.now();
+				lastWeatherFetch = Date.now();
 				callback(createWeatherString(type));
 			},
 		});
@@ -377,7 +396,8 @@ var contentIndex = -1;
 var lastTransitionTime = 0;
 
 var weatherCache = null;
-var lastWeatherTime = 0;
+var lastWeatherFetch = 0;
+var timezoneCache = null;
 
 var contentCache = localStorage.getItem('contentCache');
 if (contentCache)
