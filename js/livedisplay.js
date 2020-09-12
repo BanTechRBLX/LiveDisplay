@@ -13,9 +13,9 @@ function getRobloxVisitsAndConcurrents(callback, universeId, getVisits) {
 		dataType: 'json',
 		success: function (data) {
 			if (getVisits) {
-				callback(data.data[0].visits);
+				callback(localiseNumber(data.data[0].visits));
 			} else {
-				callback(data.data[0].playing);
+				callback(localiseNumber(data.data[0].playing));
 			}
 		},
 	});
@@ -30,7 +30,7 @@ function getRobloxFavouritesCount(callback, universeId) {
 	$.ajax('https://cors-anywhere.herokuapp.com/https://games.roblox.com/v1/games/' + universeId.toString() + '/favorites/count', {
 		dataType: 'json',
 		success: function (data) {
-			callback(data.favoritesCount);
+			callback(localiseNumber(data.favoritesCount));
 		},
 	});
 }
@@ -44,7 +44,7 @@ function getRobloxGroupMembers(callback, groupId) {
 	$.ajax('https://cors-anywhere.herokuapp.com/https://groups.roblox.com/v1/groups/' + groupId.toString(), {
 		dataType: 'json',
 		success: function (data) {
-			callback(data.memberCount);
+			callback(localiseNumber(data.memberCount));
 		},
 	});
 }
@@ -59,7 +59,7 @@ function getDiscordPresenceCount(callback, guildId) {
 	$.ajax('https://cors-anywhere.herokuapp.com/https://discordapp.com/api/guilds/' + guildId.toString() + '/widget.json', {
 		dataType: 'json',
 		success: function (data) {
-			callback(data.presence_count);
+			callback(localiseNumber(data.presence_count));
 		},
 	});
 }
@@ -85,9 +85,9 @@ function getYouTubeSubscribersAndViews(callback, channelName, getSubscribers) {
 					subCount = parseFloat(subString) * Math.pow(10, 3);
 				if (millions)
 					subCount = parseFloat(subString) * Math.pow(10, 6);
-				callback(subCount);
+				callback(localiseNumber(subCount));
 			} else {
-				callback(parseInt(data.match(/"([\d,]+)\sviews"/)[1].replace(',', '')));
+				callback(localiseNumber(parseInt(data.match(/"([\d,]+)\sviews"/)[1].replace(',', ''))));
 			}
 		},
 	});
@@ -102,7 +102,7 @@ function getTwitterFollowers(callback, screenName) {
 	$.ajax('https://cors-anywhere.herokuapp.com/https://cdn.syndication.twimg.com/widgets/followbutton/info.json?screen_names=' + screenName, {
 		dataType: 'json',
 		success: function (data) {
-			callback(data[0].followers_count);
+			callback(localiseNumber(data[0].followers_count));
 		},
 	});
 }
@@ -116,7 +116,7 @@ function getInstagramFollowers(callback, username) {
 	$.ajax('https://www.instagram.com/' + username, {
 		dataType: 'html',
 		success: function (data) {
-			callback(parseInt(data.match(/"edge_followed_by":{"count":(\d+)}/)[1]));
+			callback(localiseNumber(parseInt(data.match(/"edge_followed_by":{"count":(\d+)}/)[1])));
 		},
 	});
 }
