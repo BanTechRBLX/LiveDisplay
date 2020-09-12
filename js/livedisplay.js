@@ -456,22 +456,24 @@ function transitionScreen($container, pixelMap, icon) {
 				if (quickChange) // Exit early
 					return transitionScreen($container, pixelMap, icon);
 				
+				pixels = $container[0].getElementsByClassName('pixel');
+				
 				startingPixelIndex += rows;
 				for (let pixelIndex = startingPixelIndex; pixelIndex < startingPixelIndex + transitionWidth * rows; pixelIndex++) {
 					if (pixelIndex < 0 || pixelIndex >= numPixels)
 						continue;
 					let transition = transitionFill[pixelIndex - startingPixelIndex];
 					if (transition == 1) {
-						$container.find('.pixel:eq(' + pixelIndex + ')').addClass('on');
+						pixels[pixelIndex].classList.add('on');
 					} else {
 						let clear = transitionClear[pixelIndex - startingPixelIndex];
 						if (clear != 1)
 							continue;
 						let activate = pixelMap[pixelIndex];
 						if (activate == 1)
-							$container.find('.pixel:eq(' + pixelIndex + ')').addClass('on');
+							pixels[pixelIndex].classList.add('on');
 						else
-							$container.find('.pixel:eq(' + pixelIndex + ')').removeClass('on');
+							pixels[pixelIndex].classList.remove('on');
 					}
 				}
 
@@ -522,25 +524,24 @@ function updateTimeout(object) {
 function toggleQuickChange() {
 	quickChange = !quickChange;
 	$('button#quick_change').text(quickChange ? 'Use Transitions' : 'Use Quick Changes');
-	localStorage.setItem('quickChange', quickChange);
+	localStorage.setItem('quickChange', JSON.stringify(quickChange));
 }
 
 // Create pixels
 function createPixels($containers) {
 	$containers.each(function (index, container) {
-		let $existingPixels = $(container).find('.pixel');
-		if ($existingPixels.length > columns * rows) {
-			for (let index = columns * rows; index < $existingPixels.length; index++) {
-				$($existingPixels[index]).remove();
+		let pixels = container.getElementsByClassName('pixel');
+		if (pixels.length > columns * rows) {
+			for (let index = columns * rows; index < pixels.length; index++) {
+				pixels[index].remove();
 			}
 		}
 		for (let index = 0; index < columns * rows; index++) {
-			if ($existingPixels[index])
+			if (pixels[index])
 				continue;
 			let element = document.createElement('div');
 			container.appendChild(element);
-			let $element = $(element);
-			$element.addClass('pixel');
+			element.classList.add('pixel');
 		}
 	});
 }
@@ -665,5 +666,5 @@ if (localStorage.getItem('theme') == 'invert')
 
 timeout = localStorage.getItem('timeout') ? parseInt(localStorage.getItem('timeout')) : timeout;
 $('#timeout_range,#timeout').val(timeout);
-quickChange = typeof (!!localStorage.getItem('quickChange')) == 'boolean' ? localStorage.getItem('quickChange') : quickChange;
+quickChange = localStorage.getItem('quickChange') ? JSON.parse(localStorage.getItem('quickChange')) : quickChange;
 $('button#quick_change').text(quickChange ? 'Use Transitions' : 'Use Quick Changes');
