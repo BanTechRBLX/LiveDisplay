@@ -70,7 +70,7 @@ body {
 }
 
 .metric-value {
-	padding: 1.5rem;
+	padding: 1.25rem;
 }
 
 .pixel-container {
@@ -78,6 +78,7 @@ body {
 	flex-direction: column;
 	flex-wrap: wrap;
 	align-content: flex-start;
+	justify-content: center;
 }
 
 .pixel {
