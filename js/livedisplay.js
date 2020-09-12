@@ -390,6 +390,7 @@ const transitionStepDelay = 30;
 
 var columns = 72; // changes on window resize
 var timeout = 10; // secs, default
+var quickChange = false; // skip the wipe transition (for devices that can't handle animations and fast changes)
 
 var content = [];
 var contentIndex = -1;
@@ -423,10 +424,6 @@ function getWeatherIcon() {
 }
 
 function transitionScreen($container, pixelMap, icon) {
-	if ($container.data('transition')) {
-		return setTimeout(function () { transitionScreen($container, pixelMap); }, 500);
-	}
-
 	if (pixelMap.length == 0 && $container.find('.pixel.on').length == 0)
 		return;
 
@@ -435,42 +432,64 @@ function transitionScreen($container, pixelMap, icon) {
 		icon = getWeatherIcon();
 	$container.parent().find('.metric-icon .icon').css('background-image', 'url(' + icon + ')');
 
-	let startingPixelIndex = -transitionWidth * rows;
-	let numPixels = $container.find('.pixel').length;
-	let iterations = columns + transitionWidth;
-	let iterationIndex = 0;
-	let iterate = function () {
+	if (quickChange) {
+		$container.find('.pixel').each(function (index, element) {
+			if (element.classList.contains('on'))
+				element.classList.remove('on');
+		});
 		setTimeout(function () {
-			startingPixelIndex += rows;
-			for (let pixelIndex = startingPixelIndex; pixelIndex < startingPixelIndex + transitionWidth * rows; pixelIndex++) {
-				if (pixelIndex < 0 || pixelIndex >= numPixels)
-					continue;
-				let transition = transitionFill[pixelIndex - startingPixelIndex];
-				if (transition == 1) {
-					$container.find('.pixel:eq(' + pixelIndex + ')').addClass('on');
-				} else {
-					let clear = transitionClear[pixelIndex - startingPixelIndex];
-					if (clear != 1)
+			$container.find('.pixel').each(function (index, element) {
+				if (element.classList.contains('on') && pixelMap[index] != 1)
+					element.classList.remove('on');
+				else if (!element.classList.contains('on') && pixelMap[index] == 1)
+					element.classList.add('on');
+			});
+			$container.data('transition', false);
+		}, 1000);
+	} else {
+		let startingPixelIndex = -transitionWidth * rows;
+		let numPixels = $container.find('.pixel').length;
+		let iterations = columns + transitionWidth;
+		let iterationIndex = 0;
+		let iterate = function () {
+			setTimeout(function () {
+				if (quickChange) // Exit early
+					return transitionScreen($container, pixelMap, icon);
+				
+				startingPixelIndex += rows;
+				for (let pixelIndex = startingPixelIndex; pixelIndex < startingPixelIndex + transitionWidth * rows; pixelIndex++) {
+					if (pixelIndex < 0 || pixelIndex >= numPixels)
 						continue;
-					let activate = pixelMap[pixelIndex];
-					if (activate == 1)
+					let transition = transitionFill[pixelIndex - startingPixelIndex];
+					if (transition == 1) {
 						$container.find('.pixel:eq(' + pixelIndex + ')').addClass('on');
-					else
-						$container.find('.pixel:eq(' + pixelIndex + ')').removeClass('on');
+					} else {
+						let clear = transitionClear[pixelIndex - startingPixelIndex];
+						if (clear != 1)
+							continue;
+						let activate = pixelMap[pixelIndex];
+						if (activate == 1)
+							$container.find('.pixel:eq(' + pixelIndex + ')').addClass('on');
+						else
+							$container.find('.pixel:eq(' + pixelIndex + ')').removeClass('on');
+					}
 				}
-			}
 
-			iterationIndex++;
-			if (iterationIndex < iterations)
-				iterate();
-			else
-				$container.data('transition', false);
-		}, transitionStepDelay);
+				iterationIndex++;
+				if (iterationIndex < iterations)
+					iterate();
+				else
+					$container.data('transition', false);
+			}, transitionStepDelay);
+		}
+		iterate();
 	}
-	iterate();
 }
 
 function setMessage($container, message, icon) {
+	if ($container.data('transition'))
+		return setTimeout(function () { setMessage($container, message, icon); }, 500);
+
 	let pixelMap = [];
 	let blankColumn = [0, 0, 0, 0, 0, 0, 0];
 	let charArray = message.split('');
@@ -497,6 +516,13 @@ function updateTimeout(object) {
 	timeout = object.value;
 	$('input#timeout').val(timeout);
 	$('input#timeout_range').val(timeout);
+	localStorage.setItem('timeout', timeout);
+}
+
+function toggleQuickChange() {
+	quickChange = !quickChange;
+	$('button#quick_change').text(quickChange ? 'Use Transitions' : 'Use Quick Changes');
+	localStorage.setItem('quickChange', quickChange);
 }
 
 // Create pixels
@@ -559,7 +585,7 @@ function iterateScreen() {
 					}
 					localStorage.setItem('contentCache', JSON.stringify(contentCache));
 
-					lastTransitionTime = Date.now() + (columns + transitionWidth) * transitionStepDelay;
+					lastTransitionTime = Date.now() + (quickChange ? (columns + transitionWidth) * transitionStepDelay : 0);
 				}, ...content[contentIndex][index].arguments);
 			} else {
 				let value = contentCache[contentIndex][index].value;
@@ -579,7 +605,7 @@ function initialiseScreens() {
 		let nowTime = Date.now();
 		if (document.visibilityState == 'visible' && nowTime - lastTransitionTime > timeout * 1000) { // 20 secs
 			iterateScreen();
-			lastTransitionTime = nowTime + (columns + transitionWidth) * transitionStepDelay;
+			lastTransitionTime = nowTime + (quickChange ? (columns + transitionWidth) * transitionStepDelay : 0);
 		}
 	};
 	setInterval(checkFunction, 200)
@@ -637,4 +663,7 @@ setUpScreen();
 if (localStorage.getItem('theme') == 'invert')
 	$('html').addClass('invert');
 
+timeout = localStorage.getItem('timeout') ? parseInt(localStorage.getItem('timeout')) : timeout;
 $('#timeout_range,#timeout').val(timeout);
+quickChange = typeof (!!localStorage.getItem('quickChange')) == 'boolean' ? localStorage.getItem('quickChange') : quickChange;
+$('button#quick_change').text(quickChange ? 'Use Transitions' : 'Use Quick Changes');
